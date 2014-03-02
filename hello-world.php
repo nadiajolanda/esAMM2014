@@ -3,6 +3,6 @@
 // Press the 'Run' button on the top to start the web server,
 // then click the URL that is emitted to the Output tab of the console
 
-echo 'Hello world from Davide Spano prova git!';
+echo 'Hello world from Test web hook!';
 
 ?>
