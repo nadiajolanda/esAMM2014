@@ -254,7 +254,6 @@ class AppelloFactory {
          if (!$stmt->execute()) {
             error_log("[caricaInsegnamentoDaStmt] impossibile" .
                     " eseguire lo statement");
-            $mysqli->close();
             return null;
         }
 
@@ -287,7 +286,6 @@ class AppelloFactory {
         if (!$bind) {
             error_log("[caricaInsegnamentoDaStmt] impossibile" .
                     " effettuare il binding in output");
-            $mysqli->close();
             return null;
         }
 
@@ -296,7 +294,6 @@ class AppelloFactory {
         }
         
         $stmt->close();
-        $mysqli->close();
         
         return $appelli;
     }
