@@ -5,6 +5,7 @@ include_once 'controller/BaseController.php';
 include_once 'controller/StudenteController.php';
 include_once 'controller/DocenteController.php';
 
+date_default_timezone_set("Europe/Rome");
 // punto unico di accesso all'applicazione
 FrontController::dispatch($_REQUEST);
 
