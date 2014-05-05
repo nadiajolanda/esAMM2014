@@ -39,11 +39,13 @@ class DipartimentoFactory {
         $mysqli = Db::getInstance()->connectDb();
         if(!isset($mysqli)){
             error_log("[getDipartimenti] impossibile inizializzare il database");
+            $mysqli->close();
             return $dip;
         }
         $result = $mysqli->query($query);
         if($mysqli->errno > 0){
             error_log("[getDipartimenti] impossibile eseguire la query");
+            $mysqli->close();
             return $dip;
         }
         
@@ -51,6 +53,7 @@ class DipartimentoFactory {
             $dip[] = self::getDipartimento($row);
         }
         
+        $mysqli->close();
         return $dip;
     }
     

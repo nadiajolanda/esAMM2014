@@ -43,6 +43,7 @@ class UserFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[loadUser] impossibile inizializzare il database");
+            $mysqli->close();
             return null;
         }
 
@@ -76,18 +77,21 @@ class UserFactory {
         if (!$stmt) {
             error_log("[loadUser] impossibile" .
                     " inizializzare il prepared statement");
+            $mysqli->close();
             return null;
         }
 
         if (!$stmt->bind_param('ss', $username, $password)) {
             error_log("[loadUser] impossibile" .
                     " effettuare il binding in input");
+            $mysqli->close();
             return null;
         }
 
         $studente = self::caricaStudenteDaStmt($stmt);
         if (isset($studente)) {
             // ho trovato uno studente
+            $mysqli->close();
             return $studente;
         }
 
@@ -117,18 +121,21 @@ class UserFactory {
         if (!$stmt) {
             error_log("[loadUser] impossibile" .
                     " inizializzare il prepared statement");
+            $mysqli->close();
             return null;
         }
 
         if (!$stmt->bind_param('ss', $username, $password)) {
             error_log("[loadUser] impossibile" .
                     " effettuare il binding in input");
+            $mysqli->close();
             return null;
         }
 
         $docente = self::caricaDocenteDaStmt($stmt);
         if (isset($docente)) {
-            // ho trovato uno studente
+            // ho trovato un docente
+            $mysqli->close();
             return $docente;
         }
     }
@@ -160,11 +167,13 @@ class UserFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[getListaDocenti] impossibile inizializzare il database");
+            $mysqli->close();
             return $docenti;
         }
         $result = $mysqli->query($query);
         if ($mysqli->errno > 0) {
             error_log("[getListaDocenti] impossibile eseguire la query");
+            $mysqli->close();
             return $docenti;
         }
 
@@ -172,7 +181,7 @@ class UserFactory {
             $docenti[] = self::creaDocenteDaArray($row);
         }
 
-
+        $mysqli->close();
         return $docenti;
     }
 
@@ -188,11 +197,13 @@ class UserFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[getListaStudenti] impossibile inizializzare il database");
+            $mysqli->close();
             return $studenti;
         }
         $result = $mysqli->query($query);
         if ($mysqli->errno > 0) {
             error_log("[getListaStudenti] impossibile eseguire la query");
+            $mysqli->close();
             return $studenti;
         }
 
@@ -220,6 +231,7 @@ class UserFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[cercaStudentePerMatricola] impossibile inizializzare il database");
+            $mysqli->close();
             return null;
         }
 
@@ -252,16 +264,20 @@ class UserFactory {
         if (!$stmt) {
             error_log("[cercaStudentePerMatricola] impossibile" .
                     " inizializzare il prepared statement");
+            $mysqli->close();
             return null;
         }
 
         if (!$stmt->bind_param('i', $intval)) {
             error_log("[cercaStudentePerMatricola] impossibile" .
                     " effettuare il binding in input");
+            $mysqli->close();
             return null;
         }
 
-        return self::caricaStudenteDaStmt($stmt);
+        $toRet =  self::caricaStudenteDaStmt($stmt);
+        $mysqli->close();
+        return $toRet;
     }
 
     /**
@@ -278,6 +294,7 @@ class UserFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[cercaUtentePerId] impossibile inizializzare il database");
+            $mysqli->close();
             return null;
         }
 
@@ -313,12 +330,14 @@ class UserFactory {
                 if (!$stmt) {
                     error_log("[cercaUtentePerId] impossibile" .
                             " inizializzare il prepared statement");
+                    $mysqli->close();
                     return null;
                 }
 
                 if (!$stmt->bind_param('i', $intval)) {
                     error_log("[cercaUtentePerId] impossibile" .
                             " effettuare il binding in input");
+                    $mysqli->close();
                     return null;
                 }
 
@@ -351,16 +370,20 @@ class UserFactory {
                 if (!$stmt) {
                     error_log("[cercaUtentePerId] impossibile" .
                             " inizializzare il prepared statement");
+                    $mysqli->close();
                     return null;
                 }
 
                 if (!$stmt->bind_param('i', $intval)) {
                     error_log("[loadUser] impossibile" .
                             " effettuare il binding in input");
+                    $mysqli->close();
                     return null;
                 }
 
-                return self::caricaDocenteDaStmt($stmt);
+                $toRet =  self::caricaDocenteDaStmt($stmt);
+                $mysqli->close();
+                return $toRet;
                 break;
 
             default: return null;
@@ -427,6 +450,7 @@ class UserFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[salva] impossibile inizializzare il database");
+            $mysqli->close();
             return 0;
         }
 
@@ -441,6 +465,7 @@ class UserFactory {
         }
 
         $stmt->close();
+        $mysqli->close();
         return $count;
     }
 

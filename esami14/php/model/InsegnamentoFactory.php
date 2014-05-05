@@ -65,11 +65,13 @@ class InsegnamentoFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[getListaInsegnamenti] impossibile inizializzare il database");
+            $mysqli->close();
             return $insegnamenti;
         }
         $result = $mysqli->query($query);
         if ($mysqli->errno > 0) {
             error_log("[getListaInsegnamenti] impossibile eseguire la query");
+            $mysqli->close();
             return $insegnamenti;
         }
 
@@ -77,7 +79,7 @@ class InsegnamentoFactory {
             $insegnamenti[] = self::creaDaArray($row);
         }
         
-        
+        $mysqli->close();
         return $insegnamenti;
         
     }
@@ -121,6 +123,7 @@ class InsegnamentoFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[creaInsegnamentoDaCodice] impossibile inizializzare il database");
+            $mysqli->close();
             return $insegnamenti;
         }
         
@@ -129,19 +132,23 @@ class InsegnamentoFactory {
         if (!$stmt) {
             error_log("[creaInsegnamentoDaCodice] impossibile" .
                     " inizializzare il prepared statement");
+            $mysqli->close();
             return null;
         }
 
         if (!$stmt->bind_param('s', $codice)) {
             error_log("[creaInsegnamentoDaCodice] impossibile" .
                     " effettuare il binding in input");
+            $mysqli->close();
             return null;
         }
 
         $insegnamenti = self::caricaInsegnamentiDaStmt($stmt);
         if(count($insegnamenti) > 0){
+            $mysqli->close();
             return $insegnamenti[0];
         }else{
+            $mysqli->close();
             return null;
         }
     }
@@ -186,6 +193,7 @@ class InsegnamentoFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[getListaInsegnamentiPerDocente] impossibile inizializzare il database");
+            $mysqli->close();
             return $insegnamenti;
         }
         
@@ -194,12 +202,14 @@ class InsegnamentoFactory {
         if (!$stmt) {
             error_log("[getListaInsegnamentiPerDocente] impossibile" .
                     " inizializzare il prepared statement");
+            $mysqli->close();
             return null;
         }
 
         if (!$stmt->bind_param('i', $docente->getId())) {
             error_log("[getListaInsegnamentiPerDocente] impossibile" .
                     " effettuare il binding in input");
+            $mysqli->close();
             return null;
         }
 

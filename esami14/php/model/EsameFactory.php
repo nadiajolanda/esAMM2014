@@ -89,6 +89,7 @@ class EsameFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[esamiPerStudente] impossibile inizializzare il database");
+            $mysqli->close();
             return $esami;
         }
 
@@ -97,12 +98,14 @@ class EsameFactory {
         if (!$stmt) {
             error_log("[esamiPerStudente] impossibile" .
                     " inizializzare il prepared statement");
+            $mysqli->close();
             return $esami;
         }
 
         if (!$stmt->bind_param('i', $user->getId())) {
             error_log("[esamiPerStudente] impossibile" .
                     " effettuare il binding in input");
+            $mysqli->close();
             return $esami;
         }
 
@@ -110,6 +113,7 @@ class EsameFactory {
         foreach ($esami as $esame) {
             $this->caricaCommissione($esame);
         }
+        $mysqli->close();
         return $esami;
     }
 
@@ -166,6 +170,7 @@ class EsameFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[esamePerDocente] impossibile inizializzare il database");
+            $mysqli->close();
             return $esami;
         }
 
@@ -174,12 +179,14 @@ class EsameFactory {
         if (!$stmt) {
             error_log("[esamePerDocente] impossibile" .
                     " inizializzare il prepared statement");
+            $mysqli->close();
             return $esami;
         }
 
         if (!$stmt->bind_param('i', $user->getId())) {
             error_log("[esamiPerStudente] impossibile" .
                     " effettuare il binding in input");
+            $mysqli->close();
             return $esami;
         }
 
@@ -187,6 +194,7 @@ class EsameFactory {
         foreach ($esami as $esame) {
             $this->caricaCommissione($esame);
         }
+        $mysqli->close();
         return $esami;
     }
 
@@ -224,6 +232,7 @@ class EsameFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[caricaCommissione] impossibile inizializzare il database");
+            $mysqli->close();
             return null;
         }
         $stmt = $mysqli->stmt_init();
@@ -231,18 +240,21 @@ class EsameFactory {
         if (!$stmt) {
             error_log("[caricaCommissione] impossibile" .
                     " inizializzare il prepared statement");
+            $mysqli->close();
             return null;
         }
 
         if (!$stmt->bind_param('i', $esame->getId())) {
             error_log("[caricaIscritti] impossibile" .
                     " effettuare il binding in input");
+            $mysqli->close();
             return null;
         }
 
         if (!$stmt->execute()) {
             error_log("[caricaIscritti] impossibile" .
                     " eseguire lo statement");
+            $mysqli->close();
             return null;
         }
 
@@ -265,6 +277,7 @@ class EsameFactory {
         if (!$bind) {
             error_log("[caricaDocenteDaStmt] impossibile" .
                     " effettuare il binding in output");
+            $mysqli->close();
             return null;
         }
 
@@ -273,6 +286,7 @@ class EsameFactory {
             $esame->aggiungiMembroCommissione(UserFactory::instance()->creaDocenteDaArray($row));
         }
 
+        $mysqli->close();
         $stmt->close();
     }
 
@@ -350,6 +364,7 @@ class EsameFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[salvaElenco] impossibile inizializzare il database");
+            $mysqli->close();
             return false;
         }
         $stmt = $mysqli->stmt_init();
@@ -363,6 +378,7 @@ class EsameFactory {
         if (!$stmt) {
             error_log("[salvaElenco] impossibile" .
                     " inizializzare il prepared statement n 1");
+            $mysqli->close();
             return false;
         }
 
@@ -371,6 +387,7 @@ class EsameFactory {
         if (!$stmt2) {
             error_log("[salvaElenco] impossibile" .
                     " inizializzare il prepared statement n 2");
+            $mysqli->close();
             return false;
         }
 
@@ -386,12 +403,14 @@ class EsameFactory {
         if (!$stmt->bind_param('iiis', $studente_id, $insegnamento_id, $voto, $data)) {
             error_log("[salvaElenco] impossibile" .
                     " effettuare il binding in input stmt1");
+            $mysqli->close();
             return false;
         }
 
         if (!$stmt2->bind_param('ii', $esame_id, $docente_id)) {
             error_log("[salvaElenco] impossibile" .
                     " effettuare il binding in input stmt1");
+            $mysqli->close();
             return false;
         }
         // inizio la transazione
@@ -410,6 +429,7 @@ class EsameFactory {
                 error_log("[salvaElenco] impossibile" .
                         " eseguire lo statement 1");
                 $mysqli->rollback();
+                $mysqli->close();
                 return false;
             }
 
@@ -423,6 +443,7 @@ class EsameFactory {
                     error_log("[salvaElenco] impossibile" .
                             " eseguire lo statement 2");
                     $mysqli->rollback();
+                    $mysqli->close();
                     return false;
                 }
             }
@@ -431,7 +452,7 @@ class EsameFactory {
         // tutto ok, posso rendere persistente il salvataggio
         $mysqli->commit();
         $mysqli->autocommit(true);
-
+        $mysqli->close();
 
         return true;
     }

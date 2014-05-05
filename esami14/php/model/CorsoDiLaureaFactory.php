@@ -42,6 +42,7 @@ class CorsoDiLaureaFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[getCorsiDiLaureaPerDipartimento] impossibile inizializzare il database");
+            $mysqli->close();
             return array();
         }
 
@@ -51,12 +52,14 @@ class CorsoDiLaureaFactory {
         if (!$stmt) {
             error_log("[getCorsiDiLaureaPerDipartimento] impossibile" .
                     " inizializzare il prepared statement");
+            $mysqli->close();
             return array();
         }
 
         if (!$stmt->bind_param('i', $dip->getId())) {
             error_log("[getCorsiDiLaureaPerDipartimento] impossibile" .
                     " effettuare il binding in input");
+            $mysqli->close();
             return array();
         }
         
@@ -64,6 +67,7 @@ class CorsoDiLaureaFactory {
         foreach ($corsi as $corso){
             $corso->setDipartimento($dip);
         }
+        $mysqli->close();
         return $corsi;
     }
 
@@ -84,9 +88,13 @@ class CorsoDiLaureaFactory {
         if (!$stmt) {
             error_log("[getCorsiDiLaurea] impossibile" .
                     " inizializzare il prepared statement");
+            $mysqli->close();
             return array();
         } 
-        return self::inizializzaListaCorsi($stmt);
+        
+        $toRet =  self::inizializzaListaCorsi($stmt);
+        $mysqli->close();
+        return $toRet;
     }
 
     /**

@@ -70,6 +70,7 @@ class AppelloFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[cercaAppelloPerId] impossibile inizializzare il database");
+            $mysqli->close();
             return $appelli;
         }
         
@@ -78,6 +79,7 @@ class AppelloFactory {
         if (!$stmt) {
             error_log("[cercaAppelloPerId] impossibile" .
                     " inizializzare il prepared statement");
+            $mysqli->close();
             return $appelli;
         }
 
@@ -85,6 +87,7 @@ class AppelloFactory {
         if (!$stmt->bind_param('i', $appelloid)) {
             error_log("[cercaAppelloPerId] impossibile" .
                     " effettuare il binding in input");
+            $mysqli->close();
             return $appelli;
         }
 
@@ -93,8 +96,10 @@ class AppelloFactory {
             self::caricaIscritti($appello);
         }
         if(count($appelli > 0)){
+            $mysqli->close();
             return $appelli[0];
         }else{
+            $mysqli->close();
             return null;
         }
     }
@@ -142,6 +147,7 @@ class AppelloFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[getAppelliPerStudente] impossibile inizializzare il database");
+            $mysqli->close();
             return $appelli;
         }
         
@@ -150,6 +156,7 @@ class AppelloFactory {
         if (!$stmt) {
             error_log("[getAppelliPerStudente] impossibile" .
                     " inizializzare il prepared statement");
+            $mysqli->close();
             return $appelli;
         }
 
@@ -157,6 +164,7 @@ class AppelloFactory {
         if (!$stmt->bind_param('i', $studente->getCorsoDiLaurea()->getId())) {
             error_log("[getAppelliPerStudente] impossibile" .
                     " effettuare il binding in input");
+            $mysqli->close();
             return $appelli;
         }
 
@@ -164,6 +172,7 @@ class AppelloFactory {
         foreach($appelli as $appello){
             self::caricaIscritti($appello);
         }
+        $mysqli->close();
         return $appelli;
     }
 
@@ -212,6 +221,7 @@ class AppelloFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[getAppelliPerDocente] impossibile inizializzare il database");
+            $mysqli->close();
             return $appelli;
         }
         
@@ -220,12 +230,14 @@ class AppelloFactory {
         if (!$stmt) {
             error_log("[getAppelliPerDocente] impossibile" .
                     " inizializzare il prepared statement");
+            $mysqli->close();
             return null;
         }
 
         if (!$stmt->bind_param('i', $docente->getId())) {
             error_log("[getAppelliPerDocente] impossibile" .
                     " effettuare il binding in input");
+            $mysqli->close();
             return null;
         }
 
@@ -233,6 +245,7 @@ class AppelloFactory {
         foreach($appelli as $appello){
             self::caricaIscritti($appello);
         }
+        $mysqli->close();
         return $appelli;
     }
     
@@ -241,6 +254,7 @@ class AppelloFactory {
          if (!$stmt->execute()) {
             error_log("[caricaInsegnamentoDaStmt] impossibile" .
                     " eseguire lo statement");
+            $mysqli->close();
             return null;
         }
 
@@ -273,6 +287,7 @@ class AppelloFactory {
         if (!$bind) {
             error_log("[caricaInsegnamentoDaStmt] impossibile" .
                     " effettuare il binding in output");
+            $mysqli->close();
             return null;
         }
 
@@ -281,6 +296,7 @@ class AppelloFactory {
         }
         
         $stmt->close();
+        $mysqli->close();
         
         return $appelli;
     }
@@ -325,6 +341,7 @@ class AppelloFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[cercaStudentePerMatricola] impossibile inizializzare il database");
+            $mysqli->close();
             return null;
         }
         $stmt = $mysqli->stmt_init();
@@ -332,18 +349,21 @@ class AppelloFactory {
         if (!$stmt) {
             error_log("[caricaIscritti] impossibile" .
                     " inizializzare il prepared statement");
+            $mysqli->close();
             return null;
         }
 
         if (!$stmt->bind_param('i', $appello->getId())) {
             error_log("[caricaIscritti] impossibile" .
                     " effettuare il binding in input");
+            $mysqli->close();
             return null;
         }
         
         if (!$stmt->execute()) {
             error_log("[caricaIscritti] impossibile" .
                     " eseguire lo statement");
+            $mysqli->close();
             return null;
         }
 
@@ -369,6 +389,7 @@ class AppelloFactory {
         if (!$bind) {
             error_log("[caricaIscritti] impossibile" .
                     " effettuare il binding in output");
+            $mysqli->close();
             return null;
         }
 
@@ -376,6 +397,7 @@ class AppelloFactory {
             $appello->iscrivi(UserFactory::instance()->creaStudenteDaArray($row));
         }
         
+        $mysqli->close();
         $stmt->close();
         
     }
@@ -394,6 +416,7 @@ class AppelloFactory {
         $mysqli = Db::getInstance()->connectDb();
         if (!isset($mysqli)) {
             error_log("[aggiungiIscrizione] impossibile inizializzare il database");
+            $mysqli->close();
             return 0;
         }
 
@@ -402,21 +425,24 @@ class AppelloFactory {
         if (!$stmt) {
             error_log("[aggiungiIscrizione] impossibile" .
                     " inizializzare il prepared statement");
+            $mysqli->close();
             return 0;
         }
 
         if (!$stmt->bind_param("ii", $s->getId(), $a->getId())) {
             error_log("[aggiungiIscrizione] impossibile" .
                     " effettuare il binding in input");
+            $mysqli->close();
             return 0;
         }
 
         if (!$stmt->execute()) {
             error_log("[aggiungiIscrizione] impossibile" .
                     " eseguire lo statement");
+            $mysqli->close();
             return 0;
         }
-
+        $mysqli->close();
         return $stmt->affected_rows;
     }
     
@@ -455,6 +481,7 @@ class AppelloFactory {
         if (!$stmt) {
             error_log("[modificaDB] impossibile" .
                     " inizializzare il prepared statement");
+            $mysqli->close();
             return 0;
         }
 
@@ -465,15 +492,18 @@ class AppelloFactory {
                 $appello->getId())) {
             error_log("[modificaDB] impossibile" .
                     " effettuare il binding in input");
+            $mysqli->close();
             return 0;
         }
 
         if (!$stmt->execute()) {
             error_log("[modificaDB] impossibile" .
                     " eseguire lo statement");
+            $mysqli->close();
             return 0;
         }
 
+        $mysqli->close();
         return $stmt->affected_rows;
     }
     
