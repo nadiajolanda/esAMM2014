@@ -737,6 +737,10 @@ tr.alt-row, tr.alt-row td{
         padding-left: 150px;
         font-size: 1.2em;
     }
+    
+     #menu a:link, #menu a:visited{
+        color: white;
+    }
 }
 
 @media only screen and (max-width: 600px){
@@ -877,5 +881,9 @@ tr.alt-row, tr.alt-row td{
         vertical-align: middle;
         padding-left: 150px;
         font-size: 1.2em;
+    }
+    
+     #menu a:link, #menu a:visited{
+        color: white;
     }
 }

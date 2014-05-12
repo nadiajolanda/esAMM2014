@@ -42,6 +42,10 @@ switch ($vd->getSottoPagina()) {
     case 'el_esami':
         include 'el_esami.php';
         break;
+    
+    case 'el_esami_json':
+        include 'el_esami_json.php';
+        break;
         ?>
         
 

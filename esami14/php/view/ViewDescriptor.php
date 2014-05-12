@@ -87,12 +87,24 @@ class ViewDescriptor {
      */
     private $impToken;
 
+    /**
+     * lista di script javascript da aggiungere alla pagina
+     * @var array
+     */
+    private $js;
+    
+    /**
+     * flag per dati json (non scrive html)
+     * @var boolean
+     */
+    private $json;
     
     /**
      * Costruttore
      */
     public function __construct() {
-        ;
+        $this->js = array();
+        $this->json = false;
     }
 
     /**
@@ -254,6 +266,38 @@ class ViewDescriptor {
     public function setPagina($pagina) {
         $this->pagina = $pagina;
     }
+    
+    /**
+     * Aggiunge uno script alla pagina
+     * @param String $nome
+     */
+    public function addScript($nome){
+        $this->js[] = $nome;
+    }
+    
+    /**
+     * Restituisce la lista di script
+     * @return array
+     */
+    public function &getScripts(){
+        return $this->js;
+    }
+    
+    /**
+     * True se si devono scrivere dati json, false altrimenti
+     * @return Boolean
+     */
+    public function isJson(){
+        return $this->json;
+    }
+    
+    /**
+     * Da chiamare se la risposta contiene dati json
+     */
+    public function toggleJson(){
+        $this->json = true;
+    }
+    
 
     
     /**

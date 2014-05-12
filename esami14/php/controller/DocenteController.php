@@ -193,8 +193,55 @@ class DocenteController extends BaseController {
                     // visualizzazione dell'elenco esami
                     case 'el_esami':
                         $insegnamenti = InsegnamentoFactory::instance()->getListaInsegnamentiPerDocente($user);
-                        $el_esami = EsameFactory::instance()->esamePerDocente($user);
                         $vd->setSottoPagina('el_esami');
+                        $vd->addScript("../js/jquery-2.1.1.min.js");
+                        $vd->addScript("../js/elencoEsami.js");
+                        break;
+
+                    // gestione della richiesta ajax di filtro esami
+                    case 'filtra_esami':
+                        $vd->toggleJson();
+                        $vd->setSottoPagina('el_esami_json');
+                        $errori = array();
+
+                        if (isset($request['insegnamento']) && ($request['insegnamento'] != '')) {
+                            $insegnamento_id = filter_var($request['insegnamento'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+                            if($insegnamento_id == null){
+                                $errori['insegnamento'] = "Specificare un identificatore valido";
+                            }
+                        } else {
+                            $insegnamento_id = null;
+                            
+                        }
+
+                        if (isset($request['matricola']) && ($request['matricola'] != '')) {
+                            $matricola = filter_var($request['matricola'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+                            if($matricola == null){
+                                $errori['matricola'] = "Specificare una matricola valida";
+                            }
+                        } else {
+                            $matricola = null;
+                            
+                        }
+
+                        if (isset($request['cognome'])) {
+                            $cognome = $request['cognome'];
+                        }else{
+                            $cognome = null;
+                        }
+
+                        if (isset($request['nome'])) {
+                            $nome = $request['nome'];
+                        }else{
+                            $nome = null;
+                        }
+
+                        
+                        $esami = EsameFactory::instance()->ricercaEsami(
+                                $user, 
+                                $insegnamento_id, 
+                                $matricola, $nome, $cognome);
+
                         break;
 
                     default:
@@ -326,7 +373,6 @@ class DocenteController extends BaseController {
                             $intVal = filter_var($request['appello'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
                             if (isset($intVal)) {
                                 $mod_appello = $this->cercaAppelloPerId($intVal, $appelli);
-                                
                             }
                         }
                         $this->showHomeUtente($vd);
@@ -338,12 +384,12 @@ class DocenteController extends BaseController {
                             $intVal = filter_var($request['appello'], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
                             if (isset($intVal)) {
                                 $mod_appello = AppelloFactory::instance()->cercaAppelloPerId($intVal);
-                                if($mod_appello != null){
-                                    if(AppelloFactory::instance()->cancella($mod_appello)!= 1){
+                                if ($mod_appello != null) {
+                                    if (AppelloFactory::instance()->cancella($mod_appello) != 1) {
                                         $msg[] = '<li> Impossibile cancellare l\'appello </li>';
                                     }
                                 }
-                                
+
                                 $this->creaFeedbackUtente($msg, $vd, "Appello eliminato");
                             }
                         }
@@ -513,14 +559,13 @@ class DocenteController extends BaseController {
                     case 'r_salva_elenco':
                         if (isset($elenco_id)) {
                             if (count($_SESSION[self::elenco][$elenco_id]->getEsami()) > 0) {
-                                if(!EsameFactory::instance()->salvaElenco($_SESSION[self::elenco][$elenco_id])){
+                                if (!EsameFactory::instance()->salvaElenco($_SESSION[self::elenco][$elenco_id])) {
                                     $msg[] = '<li> Impossibile salvare l\'elenco</li>';
-                                }else {
+                                } else {
                                     unset($_SESSION[self::elenco][$elenco_id]);
                                     $elenchi_attivi = $_SESSION[self::elenco];
                                     $vd->setPagina("reg_esami");
                                     $vd->setSottoPagina('reg_esami');
-                                    
                                 }
                             } else {
                                 $msg[] = '<li> &Egrave; necessario inserire almeno un esame</li>';
