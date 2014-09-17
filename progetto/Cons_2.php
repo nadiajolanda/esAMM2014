@@ -24,7 +24,7 @@ $ruolo=$_SESSION[1Ruolo'];
 
 <td bgcolor="navy" align="center" col span=2><font face="arial"
 
-color="#ffffff" size="7"><fieldset><b>Catalogo dei dischi </b></font></fieldset></td> <tr>
+color="#ffffff" size="7"><fieldset><b>Catalogo dei cd </b></font></fieldset></td> <tr>
 
 <td><img src="nany.jpg"></td><td>
 
@@ -40,7 +40,7 @@ $ruolo";></b></legend>
 
 <li><a href="Cons_B.php">Anagrafiche</a> </li> <li><a href="Cons_5.php">Case discografiche </a></li>
 
-<li><a href="Cons_7. php">Dischi </a></li> </ul> 
+<li><a href="Cons_7. php">cd </a></li> </ul> 
 
 <li>Modifica:
 
@@ -48,7 +48,7 @@ $ruolo";></b></legend>
 
 <li><a href="Cons_14. php">Anagrafiche</a></li> <li><a href="Cons_16.php">Case
 
-<li><a href="Cons_18. php">Dischi </a></li > </ul>
+<li><a href="Cons_18. php">cd </a></li > </ul>
 
 <li >visualizzazione : 
 
@@ -56,7 +56,7 @@ $ruolo";></b></legend>
 
 <li><a href="Cons_9.php">Anagrafiche</a> </li> <li><a href="Cons_ll.php">case
 
-<li><a href="Cons_13. php">Dischi </a></li> </ul>
+<li><a href="Cons_13. php">cd </a></li> </ul>
 
 <li><a href="Logout. php">Logout</a></li> </ul>
 
